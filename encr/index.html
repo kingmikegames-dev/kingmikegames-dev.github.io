@@ -38,6 +38,32 @@
             animation: fadeIn 1s ease-out;
         }
 
+	.tabs {
+	    position: absolute;
+	    top: 40px;
+	    display: flex;
+	    gap: 10px;
+	}
+	
+	.tab {
+	    padding: 10px 18px;
+	    border: none;
+	    border-radius: 8px;
+	    background-color: rgba(0,0,0,0.6);
+	    color: white;
+	    cursor: pointer;
+	    backdrop-filter: blur(10px);
+	    transition: 0.2s;
+	}
+
+        .tab:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .tab.active {
+            background-color: #ff4747;
+        }
+
         h1 {
             margin-bottom: 10px;
         }
@@ -69,16 +95,53 @@
     </style>
 </head>
 <body>
-    <div class="box">
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('itch')">Itch.io Page</button>
+        <button class="tab" onclick="showTab('play')">Play Game</button>
+    </div>
+
+    <div class="box" id="itchTab">
         <h1>EmerNemer Clicker Remastered</h1>
         <p>A remaster of EmerNemer Clicker by EmerNemer on Scratch</p>
         <p>Try it out on my itch.io page</p>
         <button onclick="goToItch()">ENCR's itch.io page</button>
     </div>
 
+    <div class="box" id="playTab" style="display:none; max-width:700px;">
+        <h2>Play EmerNemer Clicker Remastered</h2>
+
+        <iframe 
+            src="https://html-classic.itch.zone/html/15887449/index.html"
+            id="game_drop"
+            width="640"
+            height="360"
+            style="display:block; border:none; margin-top:15px;"
+            allowfullscreen>
+        </iframe>
+    </div>
+
     <script>
         function goToItch() {
             window.location.href = "https://kingmikegames.itch.io/encr";
+        }
+
+        function showTab(tab) {
+            const itch = document.getElementById("itchTab");
+            const play = document.getElementById("playTab");
+            const tabs = document.querySelectorAll(".tab");
+
+            itch.style.display = "none";
+            play.style.display = "none";
+
+            tabs.forEach(t => t.classList.remove("active"));
+
+            if (tab === "itch") {
+                itch.style.display = "block";
+                tabs[0].classList.add("active");
+            } else {
+                play.style.display = "block";
+                tabs[1].classList.add("active");
+            }
         }
     </script>
 </body>
