@@ -38,6 +38,52 @@
             animation: fadeIn 1s ease-out;
         }
 
+        .tabs {
+            position: absolute;
+            top: 40px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .tab {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            background-color: rgba(0,0,0,0.6);
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: 0.2s;
+        }
+
+        .tab:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+
+        .tab.active {
+            background-color: #ff4747;
+        }
+
+        .links {
+            top: 40px;
+            gap: 10px;
+        }
+        
+        .link {
+            padding: 10px 18px;
+            border: none;
+            border-radius: 8px;
+            background-color: #ff4747;
+            color: white;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: 0.2s;
+        }
+
+        .link:hover {
+            background-color: #ff6b6b;
+        }
+
         h1 {
             margin-bottom: 10px;
         }
@@ -69,16 +115,60 @@
     </style>
 </head>
 <body>
-    <div class="box">
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('itch')">Itch.io Page</button>
+        <button class="tab" onclick="showTab('games')">Games</button>
+    </div>
+
+    <div class="box", id="itchTab">
         <h1>King Mike Games</h1>
         <p>if y'all have seen EmerNemer on Scratch i've been making games inspired by that guy</p>
         <p>Go check out my stuff on my itch.io page</p>
         <button onclick="goToItch()">My itch.io page</button>
     </div>
 
+    <!-- Play Box -->
+    <div class="box" id="gamesTab" style="display:none;">
+        <h1>My Games</h1>
+        <p>Check out my games here, you can check them out on itch.io but I've made them available on GitHub (3/28/2026)</p>
+        
+        <div class="links">
+            <h2>EmerNemer Clicker Remastered</h2>
+            <button class="link" onclick="goToENCR()">GitHub</button>
+            <button class="link" onclick="goToItchENCR()">itch.io</button>
+        </div>
+    </div>
+
     <script>
         function goToItch() {
-            window.location.href = "https://kingmikegames.itch.io";
+            window.location.href = "https://kingmikegames.itch.io/";
+        }
+
+        function goToENCR() {
+            window.location.href = "https://kingmikegames-dev.github.io/encr";
+        }
+
+        function goToItchENCR() {
+            window.location.href = "https://kingmikegames.itch.io/encr";
+        }
+
+        function showTab(tab) {
+            const itch = document.getElementById("itchTab");
+            const games = document.getElementById("gamesTab");
+            const tabs = document.querySelectorAll(".tab");
+
+            itch.style.display = "none";
+            games.style.display = "none";
+
+            tabs.forEach(t => t.classList.remove("active"));
+
+            if (tab === "itch") {
+                itch.style.display = "block";
+                tabs[0].classList.add("active");
+            } else {
+                games.style.display = "block";
+                tabs[1].classList.add("active");
+            }
         }
     </script>
 </body>
