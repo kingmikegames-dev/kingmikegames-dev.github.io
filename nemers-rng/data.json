@@ -1,7 +1,7 @@
 {
   "versions":{
-    "release":"0.4.03",
-    "dev":"0.4.03"
+    "release":"0.5.0",
+    "dev":"0.5.0"
   },
 
   "blacklist":{
