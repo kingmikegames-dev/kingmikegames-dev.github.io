@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EmerNemer Clicker Remastered</title>
+
+    <link rel="icon" href="favicon.png">
+
+    <style>
+        @font-face {
+            font-family: "Knewave";
+            src: url("../Knewave-Regular.ttf") format("truetype");
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: url("background.png") center center / cover fixed;
+            font-family: "Knewave", sans-serif;
+            color: #222;
+        }
+
+        /* Main popup */
+
+        .popup {
+            width: min(850px, 92%);
+            margin: 35px auto;
+            overflow: hidden;
+        }
+
+        .popup-header {
+            background: linear-gradient(
+                to right,
+                #00ccff,
+                #0085ff
+            );
+            padding: 7px 20px;
+            text-align: left;
+            color: white;
+            font-size: 32px;
+        }
+
+        .popup-content {
+            background: linear-gradient(
+                to bottom,
+                #ffffff,
+                #a6a6a6
+            );
+            padding: 25px;
+        }
+
+        /* Game description */
+
+        .game-description {
+            text-align: center;
+            font-size: 25px;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .game-instruction {
+            text-align: center;
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+
+        /* Platform buttons */
+
+        .game-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .gradient-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            width: 100%;
+            padding: 10px 18px;
+            border: 10px solid transparent;
+
+            background:
+                linear-gradient(
+                    to right,
+                    #00ccff,
+                    #0085ff
+                ) padding-box,
+                linear-gradient(
+                    to right,
+                    #0085ff,
+                    #00ccff
+                ) border-box;
+
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 20px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+
+            transition: filter 0.15s;
+        }
+
+        .gradient-button span {
+            display: inline-block;
+            transform: scaleX(1.5) scaleY(1.5);
+        }
+
+        .gradient-button:hover:not(.disabled) {
+            filter: brightness(1.12);
+        }
+
+        .gradient-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Mobile layout */
+
+        @media (max-width: 550px) {
+            .popup {
+                margin: 25px auto;
+            }
+
+            .popup-content {
+                padding: 15px;
+            }
+
+            .game-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Main game popup -->
+
+    <main class="popup">
+
+        <header class="popup-header" id="game-title">
+            EmerNemer Clicker Remastered
+        </header>
+
+        <div class="popup-content">
+
+            <div class="game-description" id="game-description">
+                A remaster of EmerNemer Clicker by EmerNemer on Scratch
+            </div>
+
+            <div class="game-instruction">
+                Try it out on one of these pages:
+            </div>
+
+            <div class="game-buttons" id="game-buttons">
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        // Game information
+
+        const game = {
+            title: "Nemer's RNG",
+
+            description:
+                "Test your luck and get super cool auras!",
+
+            itch:
+                "https://kingmikegames.itch.io/nemers-rng"
+        };
+
+        // Set game information
+
+        document.title = game.title;
+
+        document.getElementById("game-title").textContent =
+            game.title;
+
+        document.getElementById("game-description").textContent =
+            game.description;
+
+        // Generate platform buttons
+
+        const buttonsContainer =
+            document.getElementById("game-buttons");
+
+        const platforms = [
+            { name: "Itch.io", url: game.itch },
+            { name: "GameJolt", url: game.gamejolt },
+            { name: "Itch.io (Beta)", url: game.beta }
+        ];
+
+        function playSound(name) {
+            const sound = new Audio(`../${name}.wav`);
+            sound.currentTime = 0;
+            sound.play().catch(() => {});
+        }
+
+        platforms.forEach(platform => {
+            const button = document.createElement("a");
+
+            button.className = "gradient-button";
+
+            const label = document.createElement("span");
+            label.textContent = platform.name;
+
+            button.appendChild(label);
+
+            if (platform.url) {
+                button.href = platform.url;
+                button.target = "_blank";
+                button.rel = "noopener noreferrer";
+
+                button.addEventListener("click", () => {
+                    const sound = new Audio("../confirm.wav");
+                    sound.play().catch(() => {});
+                });
+            } else {
+                button.classList.add("disabled");
+                button.setAttribute("aria-disabled", "true");
+
+                button.addEventListener("click", event => {
+                    event.preventDefault();
+
+                    const sound = new Audio("../locked.wav");
+                    sound.play().catch(() => {});
+                });
+            }
+
+            buttonsContainer.appendChild(button);
+        });
+    </script>
+
+</body>
+</html>
