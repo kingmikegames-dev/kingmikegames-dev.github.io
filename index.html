@@ -1,175 +1,409 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>King Mike Games</title>
-    <link rel="icon" type="image/png" href="favicon.png">
+
+    <link rel="icon" href="favicon.png">
+
     <style>
+        @font-face {
+            font-family: "Knewave";
+            src: url("Knewave-Regular.ttf") format("truetype");
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background-image: url('background.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            color: white;
+            min-height: 100vh;
+            background: url("background.png") center center / cover fixed;
+            font-family: "Knewave", sans-serif;
+            color: #222;
+        }
+
+        /* Top navigation */
+
+        .topbar {
+            width: 100%;
+            height: 60px;
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            text-align: center;
+            justify-content: flex-start;
+            align-items: stretch;
+            gap: 0;
+            padding: 0;
+            background: linear-gradient(to right, #00ccff, #0085ff);
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .box {
-            background-color: rgba(0, 0, 0, 0.6);
-            padding: 30px 40px;
-            border-radius: 15px;
-            text-align: center;
-            max-width: 400px;
-            color: white; /* text color */
-            box-shadow: 0 0 20px rgba(0,0,0,0.7);
-            backdrop-filter: blur(10px);
-            animation: fadeIn 1s ease-out;
-        }
-
-        .tabs {
-            position: absolute;
-            top: 40px;
-            display: flex;
-            gap: 10px;
-        }
-        
+   
         .tab {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
-            background-color: rgba(0,0,0,0.6);
-            color: white;
+            flex: 0 0 200px;
+            width: 200px;
+            height: 100%;
+            position: relative;
+            isolation: isolate;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: 0.2s;
+            border: none;
+            background: transparent;
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 35px;
+            padding: 0;
+            transition: none;
         }
 
-        .tab:hover {
-            background-color: rgba(255,255,255,0.2);
+        .tab::before {
+            content: "";
+            position: absolute;
+            inset: 5px;
+            background: #ffffff80;
+            z-index: -1;
         }
 
         .tab.active {
-            background-color: #ff4747;
+            color: #000000;
         }
 
-        .links {
-            top: 40px;
+        .tab.active::before {
+            inset: 0;
+            background: #ffffff;
+        }
+
+        /* Main popup */
+
+        .popup {
+            width: min(850px, 92%);
+            margin: 35px auto;
+            overflow: hidden;
+        }
+
+        .popup-header {
+            background: linear-gradient(to right, #00ccff, #0085ff);
+            padding: 7px 15px;
+            text-align: left;
+            padding-left: 20px;
+            color: white;
+            font-size: 32px;
+        }
+
+        .popup-content {
+            background: linear-gradient(to bottom, #ffffff, #a6a6a6);
+            padding: 25px;
+        }
+
+        /* About page */
+
+        .about-text {
+            text-align: center;
+            font-size: 25px;
+            line-height: 1.2;
+        }
+
+        /* Buttons */
+
+        .gradient-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 18px;
+            border: 10px solid transparent;
+
+            background:
+                linear-gradient(to right, #00ccff, #0085ff) padding-box,
+                linear-gradient(to right, #0085ff, #00ccff) border-box;
+
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 20px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: filter 0.15s;
+        }
+
+        .gradient-button span {
+            display: inline-block;
+            transform: scaleX(1.5) scaleY(1.5);
+        }
+
+        .gradient-button:hover:not(.disabled) {
+            filter: brightness(1.12);
+        }
+
+        .gradient-button.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .about-link {
+            display: flex;
+            justify-content: stretch;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .about-link .gradient-button {
+            width: 100%;
+        }
+
+        /* Games page */
+
+        .games-intro {
+            text-align: center;
+            font-size: 25px;
+            margin-bottom: 20px;
+        }
+
+        .games-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .game-card {
+            background: linear-gradient(to right, #ffffff, #a6a6a6);
+            padding: 18px;
+            text-align: center;
+        }
+
+        .game-title {
+            font-size: 30px;
+            margin-bottom: 15px;
+        }
+
+        .game-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
             gap: 10px;
         }
-        
-        .link {
-            padding: 10px 18px;
-            border: none;
-            border-radius: 8px;
-            background-color: #ff4747;
-            color: white;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: 0.2s;
+
+        .game-buttons .gradient-button {
+            width: 100%;
         }
 
-        .link:hover {
-            background-color: #ff6b6b;
+        /* Tab visibility */
+
+        .page {
+            display: none;
         }
 
-        h1 {
-            margin-bottom: 10px;
+        .page.active {
+            display: block;
         }
 
-        p {
-            margin-bottom: 20px;
-            color: #aaa;
-        }
+        /* Mobile layout */
 
-        p1 {
-            margin-bottom: 20px;
-            color: #aaa;
-        }
+        @media (max-width: 550px) {
+            .popup {
+                margin: 25px auto;
+            }
 
-        button {
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 8px;
-            background-color: #ff4747;
-            color: white;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+            .popup-content {
+                padding: 15px;
+            }
 
-        button:hover {
-            background-color: #ff6b6b;
+            .game-buttons {
+                grid-template-columns: 1fr;
+            }
+
+            .game-title {
+                font-size: 19px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="tabs">
-        <button class="tab active" onclick="showTab('itch')">Itch.io Page</button>
-        <button class="tab" onclick="showTab('games')">Games</button>
-    </div>
 
-    <div class="box", id="itchTab">
-        <h1>King Mike Games</h1>
-        <p>if y'all have seen EmerNemer on Scratch i've been making games inspired by that guy</p>
-        <p>Go check out my stuff on my itch.io page</p>
-        <button onclick="goToItch()">My itch.io page</button>
-    </div>
+    <!-- Navigation -->
 
-    <!-- Play Box -->
-    <div class="box" id="gamesTab" style="display:none;">
-        <h1>My Games</h1>
-        <p>Check out my games here, you can check them out on itch.io but I've made them available on GitHub (3/28/2026)</p>
-        
-        <div class="links">
-            <h2>EmerNemer Clicker Remastered</h2>
-            <button class="link" onclick="goToENCR()">GitHub</button>
-            <button class="link" onclick="goToItchENCR()">itch.io</button>
-        </div>
-    </div>
+    <nav class="topbar">
+        <button class="tab active" data-page="about">
+            About
+        </button>
+
+        <button class="tab" data-page="games">
+            Games
+        </button>
+    </nav>
+
+    <!-- About page -->
+
+    <main>
+        <section class="popup page active" id="about">
+
+            <header class="popup-header">
+                King Mike Games
+            </header>
+
+            <div class="popup-content">
+                <div class="about-text">
+                    if y'all have seen EmerNemer on Scratch
+                    i've been making games inspired by that guy
+
+                    <br><br>
+
+                    Go check out my stuff on my itch.io page
+                </div>
+
+                <div class="about-link">
+                    <a class="gradient-button"
+                       href="https://kingmikegames.itch.io/"
+                       target="_blank"
+                       rel="noopener noreferrer">
+                        <span>My itch.io page</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Games page -->
+
+        <section class="popup page" id="games">
+
+            <header class="popup-header">
+                My Games
+            </header>
+
+            <div class="popup-content">
+                <div class="games-intro">
+                    Check out my games here
+                </div>
+
+                <div class="games-list" id="games-list">
+                </div>
+            </div>
+
+        </section>
+    </main>
 
     <script>
-        function goToItch() {
-            window.location.href = "https://kingmikegames.itch.io/";
-        }
+        // Game database
+        // Leave a link as an empty string if unavailable.
 
-        function goToENCR() {
-            window.location.href = "https://kingmikegames-dev.github.io/encr";
-        }
-
-        function goToItchENCR() {
-            window.location.href = "https://kingmikegames.itch.io/encr";
-        }
-
-        function showTab(tab) {
-            const itch = document.getElementById("itchTab");
-            const games = document.getElementById("gamesTab");
-            const tabs = document.querySelectorAll(".tab");
-
-            itch.style.display = "none";
-            games.style.display = "none";
-
-            tabs.forEach(t => t.classList.remove("active"));
-
-            if (tab === "itch") {
-                itch.style.display = "block";
-                tabs[0].classList.add("active");
-            } else {
-                games.style.display = "block";
-                tabs[1].classList.add("active");
+        const games = [
+            {
+                "title": "EmerNemer Clicker Remastered",
+                "itch": "https://kingmikegames.itch.io/encr",
+                "gamejolt": "https://gamejolt.com/games/encr/1068319",
+                "beta": "https://kingmikegames.itch.io/encr-beta"
+            },
+            {
+                "title": "Nemer's RNG",
+                "itch": "https://kingmikegames.itch.io/nemers-rng"
             }
+        ];
+
+        // Generate game cards
+
+        const gamesList = document.getElementById("games-list");
+
+        function createGameCard(game) {
+            const card = document.createElement("div");
+            card.className = "game-card";
+
+            const title = document.createElement("div");
+            title.className = "game-title";
+            title.textContent = game.title;
+
+            const buttons = document.createElement("div");
+            buttons.className = "game-buttons";
+
+            const links = [
+                { name: "Itch.io", url: game.itch },
+                { name: "GameJolt", url: game.gamejolt },
+                { name: "Itch.io (Beta)", url: game.beta }
+            ];
+
+            links.forEach(link => {
+                const button = document.createElement("a");
+
+                button.className = "gradient-button";
+                const label = document.createElement("span");
+                label.textContent = link.name;
+                button.appendChild(label);
+
+                if (link.url) {
+                    button.href = link.url;
+                    button.target = "_blank";
+                    button.rel = "noopener noreferrer";
+                } else {
+                    button.classList.add("disabled");
+                    button.setAttribute("aria-disabled", "true");
+                }
+
+                buttons.appendChild(button);
+            });
+
+            card.appendChild(title);
+            card.appendChild(buttons);
+
+            return card;
         }
+
+        games.forEach(game => {
+            gamesList.appendChild(createGameCard(game));
+        });
+
+        
+        // UI sound effects
+
+        const sounds = {
+            switch: new Audio("switch.wav"),
+            confirm: new Audio("confirm.wav"),
+            locked: new Audio("locked.wav")
+        };
+
+        // Play a sound from the beginning
+
+        function playSound(name) {
+            const sound = sounds[name];
+
+            sound.currentTime = 0;
+            sound.play().catch(() => {});
+        }
+
+        // Tab switching
+
+        const tabs = document.querySelectorAll(".tab");
+        const pages = document.querySelectorAll(".page");
+
+        tabs.forEach(tab => {
+            tab.addEventListener("click", () => {
+                const page = tab.dataset.page;
+
+                // Don't play a sound if the tab is already selected
+                if (!tab.classList.contains("active")) {
+                    playSound("switch");
+                }
+
+                tabs.forEach(t => t.classList.remove("active"));
+                pages.forEach(p => p.classList.remove("active"));
+
+                tab.classList.add("active");
+                document.getElementById(page).classList.add("active");
+            });
+        });
+
+        // Game and website buttons
+
+        document.addEventListener("click", event => {
+            const button = event.target.closest(".gradient-button");
+
+            if (!button) return;
+
+            if (button.classList.contains("disabled")) {
+                playSound("locked");
+                event.preventDefault();
+                return;
+            }
+
+            playSound("confirm");
+        });
     </script>
+
 </body>
 </html>
