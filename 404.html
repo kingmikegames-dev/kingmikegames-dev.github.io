@@ -1,0 +1,149 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page not found</title>
+    <link rel="icon" href="favicon.png">
+
+    <style>
+        @font-face {
+            font-family: "Knewave";
+            src: url("Knewave-Regular.ttf");
+        }
+
+        body {
+            margin: 0;
+            background: url("background.png") center center / cover fixed;
+            font-family: "Knewave", sans-serif;
+        }
+
+        .popup {
+            width: min(600px, 92%);
+            margin: 35px auto;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #ffffff, #a6a6a6);
+        }
+
+        .popup-title {
+            background: linear-gradient(to right, #00ccff, #0085ff);
+            color: white;
+            font-size: 28px;
+            padding: 8px 15px;
+        }
+
+        .content {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 12px 15px 30px;
+        }
+
+        .error-image {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .message {
+            flex: 1;
+            font-size: 25px;
+            padding-top: 3px;
+            line-height: 1.2;
+        }
+
+        .message p {
+            margin: 0;
+        }
+
+        .gradient-button {
+            display: block;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px 10px;
+            border: 10px solid transparent;
+            background:
+                linear-gradient(to right, #00ccff, #0085ff) padding-box,
+                linear-gradient(to right, #0085ff, #00ccff) border-box;
+            color: white;
+            font-family: inherit;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .gradient-button span {
+            display: inline-block;
+            transform: scaleX(1.5) scaleY(1.5);
+        }
+
+        .button-container {
+            padding: 0 20px 20px;
+        }
+
+        .gradient-button:hover {
+            filter: brightness(1.12);
+            transition: filter 0.15s;
+        }
+
+        @media (max-width: 450px) {
+            .content {
+                gap: 10px;
+                padding: 20px 15px 25px;
+            }
+
+            .error-image {
+                width: 48px;
+                height: 48px;
+            }
+
+            .message {
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="popup">
+        <div class="popup-title">
+            404: Page not found
+        </div>
+
+        <div class="content">
+            <img src="error.png" alt="Error" class="error-image">
+
+            <div class="message">
+                <p>The page you're trying to look for doesn't exist. Check for spelling mistakes and try again.</p>
+            </div>
+        </div>
+
+        <div class="button-container">
+            <a href="index.html" class="gradient-button" id="homeButton">
+                <span>Back to homepage</span>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("homeButton").addEventListener("click", function(event) {
+            event.preventDefault();
+
+            const sound = new Audio("confirm.wav");
+            sound.play();
+
+            sound.addEventListener("ended", () => {
+                window.location.href = "index.html";
+            });
+
+            // Fallback in case the audio fails to load or play
+            sound.addEventListener("error", () => {
+                window.location.href = "index.html";
+            });
+        });
+    </script>
+</body>
+</html>
