@@ -138,6 +138,43 @@
             cursor: not-allowed;
         }
 
+        .button-row {
+            display: grid;
+            width: 100%;
+            gap: 10px;
+            box-sizing: border-box;
+        }
+
+        .details-row {
+            grid-template-columns: 1fr;
+        }
+
+        .regular-row {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .beta-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .button-row .gradient-button {
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
+
+        .beta-button {
+            background:
+                linear-gradient(to right, #ba2552, #60215d) padding-box,
+                linear-gradient(to right, #60215d, #ba2552) border-box;
+        }
+
+        @media (max-width: 550px) {
+            .button-row {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
         .about-link {
             display: flex;
             justify-content: stretch;
@@ -175,9 +212,10 @@
         }
 
         .game-buttons {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
         }
 
         .game-buttons .gradient-button {
@@ -205,7 +243,7 @@
                 padding: 15px;
             }
 
-            .game-buttons {
+            .button-row {
                 grid-template-columns: 1fr;
             }
 
@@ -286,12 +324,16 @@
 
         const games = [
             {
+                "id": "encr",
                 "title": "EmerNemer Clicker Remastered",
                 "itch": "https://kingmikegames.itch.io/encr",
                 "gamejolt": "https://gamejolt.com/games/encr/1068319",
-                "beta": "https://kingmikegames.itch.io/encr-beta"
+                "scratch": "https://scratch.mit.edu/projects/804810318",
+                "itchBeta": "https://kingmikegames.itch.io/encr-beta",
+                "scratchBeta": "https://scratch.mit.edu/projects/825487544/"
             },
             {
+                "id": "nemers-rng",
                 "title": "Nemer's RNG",
                 "itch": "https://kingmikegames.itch.io/nemers-rng"
             }
@@ -315,13 +357,54 @@
             const links = [
                 { name: "Itch.io", url: game.itch },
                 { name: "GameJolt", url: game.gamejolt },
-                { name: "Itch.io (Beta)", url: game.beta }
+                { name: "Scratch", url: game.scratch },
+                { name: "Itch.io (Beta)", url: game.itchBeta, beta: true },
+                { name: "Scratch (Beta)", url: game.scratchBeta, beta: true }
             ];
+
+            const detailsRow = document.createElement("div");
+            detailsRow.className = "button-row details-row";
+
+            const detailsButton = document.createElement("a");
+            detailsButton.className = "gradient-button";
+            detailsButton.href = `./${game.id}/`;
+            detailsButton.rel = "noopener noreferrer";
+
+            detailsButton.addEventListener("click", event => {
+                event.preventDefault();
+
+                const confirmSound = new Audio("confirm.wav");
+
+                confirmSound.addEventListener("ended", () => {
+                    window.location.href = detailsButton.href;
+                }, { once: true });
+
+                confirmSound.play().catch(() => {
+                    window.location.href = detailsButton.href;
+                });
+            });
+
+            const detailsLabel = document.createElement("span");
+            detailsLabel.textContent = "View Details";
+
+            detailsButton.appendChild(detailsLabel);
+            detailsRow.appendChild(detailsButton);
+
+            const regularRow = document.createElement("div");
+            regularRow.className = "button-row regular-row";
+
+            const betaRow = document.createElement("div");
+            betaRow.className = "button-row beta-row";
 
             links.forEach(link => {
                 const button = document.createElement("a");
 
                 button.className = "gradient-button";
+
+                if (link.beta) {
+                    button.classList.add("beta-button");
+                }
+
                 const label = document.createElement("span");
                 label.textContent = link.name;
                 button.appendChild(label);
@@ -330,13 +413,33 @@
                     button.href = link.url;
                     button.target = "_blank";
                     button.rel = "noopener noreferrer";
+
+                    button.addEventListener("click", () => {
+                        const sound = new Audio("../confirm.wav");
+                        sound.play().catch(() => {});
+                    });
                 } else {
                     button.classList.add("disabled");
                     button.setAttribute("aria-disabled", "true");
+
+                    button.addEventListener("click", event => {
+                        event.preventDefault();
+
+                        const sound = new Audio("../locked.wav");
+                        sound.play().catch(() => {});
+                    });
                 }
 
-                buttons.appendChild(button);
+                if (link.beta) {
+                    betaRow.appendChild(button);
+                } else {
+                    regularRow.appendChild(button);
+                }
             });
+
+            buttons.appendChild(detailsRow);
+            buttons.appendChild(regularRow);
+            buttons.appendChild(betaRow);
 
             card.appendChild(title);
             card.appendChild(buttons);
@@ -394,6 +497,9 @@
             const button = event.target.closest(".gradient-button");
 
             if (!button) return;
+
+            // View Details handles its own sound and navigation
+            if (button.closest(".details-row")) return;
 
             if (button.classList.contains("disabled")) {
                 playSound("locked");
