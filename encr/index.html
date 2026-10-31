@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>EmerNemer Clicker Remastered</title>
+    <title>Game Title</title>
 
     <link rel="icon" href="favicon.png">
 
@@ -45,6 +45,9 @@
             text-align: left;
             color: white;
             font-size: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .popup-content {
@@ -54,6 +57,27 @@
                 #a6a6a6
             );
             padding: 25px;
+        }
+
+        .close-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 55px;
+            height: 55px;
+            margin: -7px -15px -7px 0;
+            padding: 0;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .close-button img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         /* Game description */
@@ -74,9 +98,23 @@
         /* Platform buttons */
 
         .game-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .button-row {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            width: 100%;
             gap: 10px;
+        }
+
+        .regular-row {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .beta-row {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
         }
 
         .gradient-button {
@@ -124,6 +162,12 @@
             cursor: not-allowed;
         }
 
+        .beta-button {
+            background:
+                linear-gradient(to right, #ba2552, #60215d) padding-box,
+                linear-gradient(to right, #60215d, #ba2552) border-box;
+        }
+
         /* Mobile layout */
 
         @media (max-width: 550px) {
@@ -135,7 +179,7 @@
                 padding: 15px;
             }
 
-            .game-buttons {
+            .button-row {
                 grid-template-columns: 1fr;
             }
         }
@@ -149,13 +193,17 @@
     <main class="popup">
 
         <header class="popup-header" id="game-title">
-            EmerNemer Clicker Remastered
+            <span id="game-title-text">Game Title</span>
+
+            <button class="close-button" id="close-button" aria-label="Close">
+                <img src="../close.png" alt="">
+            </button>
         </header>
 
         <div class="popup-content">
 
             <div class="game-description" id="game-description">
-                A remaster of EmerNemer Clicker by EmerNemer on Scratch
+                Game Description
             </div>
 
             <div class="game-instruction">
@@ -183,15 +231,21 @@
             gamejolt:
                 "https://gamejolt.com/games/encr/1068319",
 
-            beta:
-                "https://kingmikegames.itch.io/encr-beta"
+            scratch:
+                "https://scratch.mit.edu/projects/804810318",
+
+            itchBeta:
+                "https://kingmikegames.itch.io/encr-beta",
+
+            scratchBeta:
+                "https://scratch.mit.edu/projects/825487544/"
         };
 
         // Set game information
 
         document.title = game.title;
 
-        document.getElementById("game-title").textContent =
+        document.getElementById("game-title-text").textContent =
             game.title;
 
         document.getElementById("game-description").textContent =
@@ -202,10 +256,15 @@
         const buttonsContainer =
             document.getElementById("game-buttons");
 
-        const platforms = [
+        const regularPlatforms = [
             { name: "Itch.io", url: game.itch },
             { name: "GameJolt", url: game.gamejolt },
-            { name: "Itch.io (Beta)", url: game.beta }
+            { name: "Scratch", url: game.scratch }
+        ];
+
+        const betaPlatforms = [
+            { name: "Itch.io (Beta)", url: game.itchBeta },
+            { name: "Scratch (Beta)", url: game.scratchBeta }
         ];
 
         function playSound(name) {
@@ -214,10 +273,14 @@
             sound.play().catch(() => {});
         }
 
-        platforms.forEach(platform => {
+        function createPlatformButton(platform) {
             const button = document.createElement("a");
 
             button.className = "gradient-button";
+
+            if (platform.name.includes("(Beta)")) {
+                button.classList.add("beta-button");
+            }
 
             const label = document.createElement("span");
             label.textContent = platform.name;
@@ -230,8 +293,7 @@
                 button.rel = "noopener noreferrer";
 
                 button.addEventListener("click", () => {
-                    const sound = new Audio("../confirm.wav");
-                    sound.play().catch(() => {});
+                    playSound("confirm");
                 });
             } else {
                 button.classList.add("disabled");
@@ -239,13 +301,42 @@
 
                 button.addEventListener("click", event => {
                     event.preventDefault();
-
-                    const sound = new Audio("../locked.wav");
-                    sound.play().catch(() => {});
+                    playSound("locked");
                 });
             }
 
-            buttonsContainer.appendChild(button);
+            return button;
+        }
+
+        const regularRow = document.createElement("div");
+        regularRow.className = "button-row regular-row";
+
+        const betaRow = document.createElement("div");
+        betaRow.className = "button-row beta-row";
+
+        regularPlatforms.forEach(platform => {
+            regularRow.appendChild(createPlatformButton(platform));
+        });
+
+        betaPlatforms.forEach(platform => {
+            betaRow.appendChild(createPlatformButton(platform));
+        });
+
+        buttonsContainer.appendChild(regularRow);
+        buttonsContainer.appendChild(betaRow);
+
+        // Close button
+
+        document.getElementById("close-button").addEventListener("click", () => {
+            const closeSound = new Audio("../close.wav");
+
+            closeSound.addEventListener("ended", () => {
+                window.location.href = "../index.html";
+            }, { once: true });
+
+            closeSound.play().catch(() => {
+                window.location.href = "../index.html";
+            });
         });
     </script>
 
