@@ -413,21 +413,9 @@
                     button.href = link.url;
                     button.target = "_blank";
                     button.rel = "noopener noreferrer";
-
-                    button.addEventListener("click", () => {
-                        const sound = new Audio("../confirm.wav");
-                        sound.play().catch(() => {});
-                    });
                 } else {
                     button.classList.add("disabled");
                     button.setAttribute("aria-disabled", "true");
-
-                    button.addEventListener("click", event => {
-                        event.preventDefault();
-
-                        const sound = new Audio("../locked.wav");
-                        sound.play().catch(() => {});
-                    });
                 }
 
                 if (link.beta) {
